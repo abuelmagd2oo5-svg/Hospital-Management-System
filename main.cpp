@@ -35,7 +35,26 @@ private:
     RoomType roomType;
 
 public:
-    Patient(int pid, string n, int a, string c);
+    Patient(int pid, string n, int a, string c){
+        id = pid;
+        name = n;
+        age = a;
+        contact = c;
+        isAdmitted = false;
+    }
+    
+    string typeFromEnum(RoomType t){
+        switch(t){
+            case GENERAL_WARD:
+                return "General Ward";
+            case ICU:
+                return "ICU";
+            case PRIVATE_ROOM:
+                return "Private Room";
+            case SEMI_PRIVATE:
+                return "Semi-Private Room"
+        }
+    }
 
     void admitPatient(RoomType type){
         if(isAdmitted){
@@ -44,9 +63,8 @@ public:
         }
 
         roomType = type;
-        cout << "Patient " << name << " admitted to " << type << "\n";
+        cout << "Patient " << name << " admitted to " << typeFromEnum(type) << "\n";
         isAdmitted = true;
-        //TO DO: implement a function that returns the room type name not constant
         
     }
     void dischargePatient(){
