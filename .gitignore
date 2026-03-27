@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# C++ build artifacts
+*.o
+*.out
+*.exe
+*.app
+
+# Local binaries
+hms
+
+# Build directories
+build/
+bin/
