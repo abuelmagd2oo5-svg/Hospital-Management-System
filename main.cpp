@@ -52,8 +52,10 @@ public:
             case PRIVATE_ROOM:
                 return "Private Room";
             case SEMI_PRIVATE:
-                return "Semi-Private Room"
+                return "Semi-Private Room";
         }
+
+        return "Unknown Room";
     }
 
     void admitPatient(RoomType type){
@@ -78,10 +80,10 @@ public:
 
     void addMedicalRecord(string record){
         medicalHistory.push(record);
-        cout << "Medical record added for " << name << ": " << testName << "\n";
+        cout << "Medical record added for " << name << ": " << record << "\n";
     }
     void requestTest(string testName){
-        testQueue.push_back(testName);
+        testQueue.push(testName);
         cout << "Test requested for " << name << ": " << testName <<"\n";
     }
     string performTest(){
@@ -96,12 +98,13 @@ public:
     }
     void displayHistory(){
         cout << "Medical history for " << name << "\n";
+        stack<string> med_hist = medicalHistory;
+
         if(med_hist.empty()){
             cout << "No medical history" << endl;
             return ;
         }
 
-        stack<string> med_hist = medicalHistory;
         while(!med_hist.empty()){
             cout << " - " << med_hist.top() << endl;
             med_hist.pop();
@@ -137,6 +140,60 @@ public:
     string getName();
     string getDepartment();
 };
+
+string departmentToString(Department department) {
+    switch (department) {
+        case CARDIOLOGY:
+            return "Cardiology";
+        case NEUROLOGY:
+            return "Neurology";
+        case ORTHOPEDICS:
+            return "Orthopedics";
+        case PEDIATRICS:
+            return "Pediatrics";
+        case EMERGENCY:
+            return "Emergency";
+        case GENERAL:
+            return "General";
+    }
+
+    return "Unknown Department";
+}
+
+Doctor::Doctor(int did, string n, Department d) {
+    id = did;
+    name = n;
+    department = d;
+}
+
+void Doctor::addAppointment(int patientId) {
+    appointmentQueue.push(patientId);
+    cout << "Appointment added for patient " << patientId << " with " << name << "\n";
+}
+
+int Doctor::seePatient() {
+    if (appointmentQueue.empty()) {
+        cout << "No appointments for Dr. " << name << ".\n";
+        return -1;
+    }
+
+    int patientId = appointmentQueue.front();
+    appointmentQueue.pop();
+    cout << "Dr. " << name << " is seeing patient " << patientId << "\n";
+    return patientId;
+}
+
+int Doctor::getId() {
+    return id;
+}
+
+string Doctor::getName() {
+    return name;
+}
+
+string Doctor::getDepartment() {
+    return departmentToString(department);
+}
 
 // ========== HOSPITAL CLASS ========== //
 class Hospital {
