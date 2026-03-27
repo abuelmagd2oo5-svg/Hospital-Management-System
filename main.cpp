@@ -35,18 +35,88 @@ private:
     RoomType roomType;
 
 public:
-    Patient(int pid, string n, int a, string c);
+    Patient(int pid, string n, int a, string c){
+        id = pid;
+        name = n;
+        age = a;
+        contact = c;
+        isAdmitted = false;
+    }
+    
+    string typeFromEnum(RoomType t){
+        switch(t){
+            case GENERAL_WARD:
+                return "General Ward";
+            case ICU:
+                return "ICU";
+            case PRIVATE_ROOM:
+                return "Private Room";
+            case SEMI_PRIVATE:
+                return "Semi-Private Room"
+        }
+    }
 
-    void admitPatient(RoomType type);
-    void dischargePatient();
-    void addMedicalRecord(string record);
-    void requestTest(string testName);
-    string performTest();
-    void displayHistory();
+    void admitPatient(RoomType type){
+        if(isAdmitted){
+            cout << "Patient " << name << " is already admitted.\n";
+            return;
+        }
 
-    int getId();
-    string getName();
-    bool getAdmissionStatus();
+        roomType = type;
+        cout << "Patient " << name << " admitted to " << typeFromEnum(type) << "\n";
+        isAdmitted = true;
+        
+    }
+    void dischargePatient(){
+        if(!isAdmitted){
+            cout << "Patient " << name << " is not currently admitted.\n";
+            return;
+        }
+        cout << "Patient " << name << " has been discharged.\n";
+        isAdmitted = false;
+    }
+
+    void addMedicalRecord(string record){
+        medicalHistory.push(record);
+        cout << "Medical record added for " << name << ": " << testName << "\n";
+    }
+    void requestTest(string testName){
+        testQueue.push_back(testName);
+        cout << "Test requested for " << name << ": " << testName <<"\n";
+    }
+    string performTest(){
+        if(testQueue.empty()){
+            cout << "No pending tests for " << name << endl;
+            return "";
+        }
+        string tst = testQueue.front();        
+        cout << "Performing test for " << name << ": " << tst;
+        testQueue.pop();
+        return tst;
+    }
+    void displayHistory(){
+        cout << "Medical history for " << name << "\n";
+        if(med_hist.empty()){
+            cout << "No medical history" << endl;
+            return ;
+        }
+
+        stack<string> med_hist = medicalHistory;
+        while(!med_hist.empty()){
+            cout << " - " << med_hist.top() << endl;
+            med_hist.pop();
+        }
+    }
+
+    int getId(){
+        return id;
+    }
+    string getName(){
+        return name;
+    }
+    bool getAdmissionStatus(){
+        return isAdmitted;
+    }
 };
 
 // ========== DOCTOR CLASS ========== //
