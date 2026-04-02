@@ -205,16 +205,143 @@ private:
     int doctorCounter;
 
 public:
-    Hospital();
+    Hospital() 
+    {
+        patientCounter = 1;
+        doctorCounter = 1;
+    }
 
-    int registerPatient(string name, int age, string contact);
-    int addDoctor(string name, Department dept);
-    void admitPatient(int patientId, RoomType type);
-    void addEmergency(int patientId);
-    int handleEmergency();
-    void bookAppointment(int doctorId, int patientId);
-    void displayPatientInfo(int patientId);
-    void displayDoctorInfo(int doctorId);
+    int registerPatient(string name, int age, string contact)
+    {
+        int newID = patientCounter;
+        Patient newPatient(newID, name, age, contact);
+        patients.push_back(newPatient);
+        patientCounter++;
+        cout << "Patient registered: " << name << " (ID: " << newID << ")" << endl;
+        return newID;
+    }
+     
+    int addDoctor(string name, Department dept)
+    {
+
+     int newdoctorID = doctorCounter;
+     Doctor newDoctor(newdoctorID, name, dept);
+     doctors.push_back(newDoctor);
+     doctorCounter ++;
+     cout << "Doctor added: " << name << " (ID: " << newdoctorID << " )- " << departmentToString(dept) << endl;
+     return newdoctorID;
+    }
+
+    void admitPatient(int patientId, RoomType type)
+    {
+
+        for (int i = 0; i < patients.size(); i++)
+        {
+          if (patients[i].getId() == patientId) 
+          {
+            patients[i].admitPatient(type);
+            return;
+          }
+        }
+       
+        cout << "Patient not found." << endl;
+    }
+
+    void addEmergency(int patientId) 
+    {
+     emergencyQueue.push(patientId);
+     cout << "Emergency added for patient " << patientId << endl;
+    }
+   
+    int handleEmergency()
+    {
+        if (emergencyQueue.empty())
+        {
+           cout << "No emergency cases." << endl;
+           return -1;
+        }
+        else{
+           int ID = emergencyQueue.front();
+           emergencyQueue.pop();
+           cout << "Handling emergency for patient " << ID << endl;
+           return ID;
+        }
+          
+    }
+
+
+    void bookAppointment(int doctorId, int patientId)
+    {
+        Doctor* doc = nullptr;
+        Patient* pat = nullptr;
+        for (int i = 0; i < doctors.size(); i++)
+        {
+            if (doctors[i].getId() == doctorId)
+            {
+               doc = &doctors[i];
+               break;
+            }
+        }
+        for (int i = 0; i < patients.size(); i++)
+        {
+            if (patients[i].getId() == patientId)
+            {
+                pat = &patients[i];
+                break;
+            }
+        }
+            if (doc == nullptr)
+        {
+            cout << "Doctor not found." << endl;
+            return;
+        }
+
+        if (pat == nullptr)
+        {
+            cout << "Patient not found." << endl;
+            return;
+        }
+
+       
+        doc->addAppointment(patientId);
+    }
+
+   void displayPatientInfo(int patientId)
+    {
+        for (int i = 0; i < patients.size(); i++)
+        {
+            if (patients[i].getId() == patientId)
+            {
+                cout << "\n=== Patient Information ===" << endl;
+                cout << "ID: " << patients[i].getId() << endl;
+                cout << "Name: " << patients[i].getName() << endl;
+                cout << "Admitted: "
+                     << (patients[i].getAdmissionStatus() ? "Yes" : "No")
+                     << endl;
+                return;
+            }
+        }
+
+        cout << "Patient not found." << endl;
+    }
+
+   void displayDoctorInfo(int doctorId)
+    {
+        for (int i = 0; i < doctors.size(); i++)
+        {
+            if (doctors[i].getId() == doctorId)
+            {
+                cout << "\n=== Doctor Information ===" << endl;
+                cout << "ID: " << doctors[i].getId() << endl;
+                cout << "Name: " << doctors[i].getName() << endl;
+                cout << "Department: " 
+                     << doctors[i].getDepartment() << endl;
+                return;
+            }
+        }
+
+        cout << "Doctor not found." << endl;
+    }
 };
 
 // ========== MAIN PROGRAM ========== //
